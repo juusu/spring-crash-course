@@ -1,0 +1,14 @@
+version: '3.3'
+services:
+    tomcat:
+        build: .
+        ports:
+            - '8080:8080'
+    mysql-employees:
+        image: genschsa/mysql-employees
+        ports: 
+            - '3306:3306'
+        environment: 
+            - MYSQL_ROOT_PASSWORD=college
+        volumes:
+            - $PWD/data:/var/lib/mysql

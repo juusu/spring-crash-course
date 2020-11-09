@@ -1,31 +1,27 @@
 package eu.nets;
 
-import java.util.List;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.web.WebApplicationInitializer;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 
 import eu.nets.config.Config;
-import eu.nets.model.Employee;
-import eu.nets.service.EmployeeService;
 
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+public class App implements WebApplicationInitializer {
 
-        try (AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext()) {
-            ctx.register(Config.class);
-            ctx.refresh();
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
 
-            EmployeeService service = ctx.getBean(EmployeeService.class);
+        System.out.println("Hello World!");
 
-            List<Employee> zaposlenici = service.getEmployees();
+        AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
+        ctx.register(Config.class);
 
-            for (Employee zaposlenik: zaposlenici) {
-                System.out.println(zaposlenik.getFirstName() + " " + zaposlenik.getLastName());
-            }
-        }
-
+        ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher", new DispatcherServlet(ctx));
+        dispatcher.setLoadOnStartup(1);
+        dispatcher.addMapping("/");
     }
 }
